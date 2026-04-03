@@ -1,0 +1,28 @@
+{
+  "value": [
+    {
+      "id": "11111111-1111-1111-1111-111111111111",
+      "userType": "Member",
+      "userPrincipalName": "alice@contoso.com",
+      "displayName": "Alice Member"
+    },
+    {
+      "id": "22222222-2222-2222-2222-222222222222",
+      "userType": "Guest",
+      "userPrincipalName": "bob_contoso.com#EXT#@fabrikam.onmicrosoft.com",
+      "displayName": "Bob Guest"
+    },
+    {
+      "id": "33333333-3333-3333-3333-333333333333",
+      "userType": "Guest",
+      "userPrincipalName": "carol_guest#EXT#@contoso.onmicrosoft.com",
+      "displayName": "Carol Guest"
+    },
+    {
+      "id": "44444444-4444-4444-4444-444444444444",
+      "userType": "Member",
+      "userPrincipalName": "dave@contoso.com",
+      "displayName": "Dave Member"
+    }
+  ]
+}
