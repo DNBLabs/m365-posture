@@ -1,6 +1,6 @@
 # m365-posture
 
-[![CI](https://github.com/GanjalfTheGreat/m365-posture/actions/workflows/ci.yml/badge.svg)](https://github.com/GanjalfTheGreat/m365-posture/actions/workflows/ci.yml)
+[![CI](https://github.com/DNBLabs/m365-posture/actions/workflows/ci.yml/badge.svg)](https://github.com/DNBLabs/m365-posture/actions/workflows/ci.yml)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-3776AB?logo=python&logoColor=white)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
