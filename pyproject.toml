@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "m365-posture"
+version = "0.1.0"
+description = "Microsoft 365 security posture reporting"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "azure-identity",
+    "msgraph-sdk",
+    "jinja2",
+]
+
+[project.optional-dependencies]
+dev = ["pytest"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
