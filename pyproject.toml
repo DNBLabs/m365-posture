@@ -5,9 +5,12 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "m365-posture"
 version = "0.1.0"
-description = "Microsoft 365 security posture reporting"
+description = "Read-only Microsoft 365 / Entra ID posture reporting via Microsoft Graph"
 readme = "README.md"
+license = {text = "MIT"}
 requires-python = ">=3.11"
+keywords = ["microsoft-graph", "entra-id", "azure-ad", "m365", "security", "posture", "automation", "intune"]
+authors = [{name = "GanjalfTheGreat"}]
 dependencies = [
     "azure-identity",
     "msgraph-sdk",
@@ -19,6 +22,11 @@ m365-posture = "m365_posture.cli:main"
 
 [project.optional-dependencies]
 dev = ["pytest"]
+
+[project.urls]
+Homepage = "https://github.com/GanjalfTheGreat/m365-posture"
+Repository = "https://github.com/GanjalfTheGreat/m365-posture"
+Issues = "https://github.com/GanjalfTheGreat/m365-posture/issues"
 
 [tool.setuptools.packages.find]
 where = ["src"]
