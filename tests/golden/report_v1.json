@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-04-03T00:00:00+00:00",
+  "tenantId": "tenant-golden-00000000-0000-0000-0000-000000000001",
+  "summary": {
+    "ok": 2,
+    "degraded": 1
+  },
+  "chapters": {
+    "applications": {
+      "chapter_id": "applications",
+      "status": "OK",
+      "data": {
+        "count": 0
+      },
+      "findings": [],
+      "error_summary": null
+    },
+    "devices": {
+      "chapter_id": "devices",
+      "status": "DEGRADED",
+      "data": {},
+      "findings": [
+        {
+          "severity": "WARN",
+          "code": "x",
+          "message": "m",
+          "evidence": null
+        }
+      ],
+      "error_summary": "err"
+    },
+    "guests": {
+      "chapter_id": "guests",
+      "status": "OK",
+      "data": {},
+      "findings": [],
+      "error_summary": null
+    }
+  }
+}
