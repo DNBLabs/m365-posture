@@ -14,6 +14,9 @@ dependencies = [
     "jinja2",
 ]
 
+[project.scripts]
+m365-posture = "m365_posture.cli:main"
+
 [project.optional-dependencies]
 dev = ["pytest"]
 
