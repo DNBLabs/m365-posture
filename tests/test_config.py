@@ -1,4 +1,3 @@
-# tests/test_config.py
 import os
 import pytest
 from m365_posture.config import load_config, ConfigError

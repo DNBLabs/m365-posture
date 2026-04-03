@@ -1,4 +1,3 @@
-# src/m365_posture/config.py
 import os
 from dataclasses import dataclass
 from typing import Optional
