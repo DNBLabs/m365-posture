@@ -1,0 +1,28 @@
+{
+  "value": [
+    {
+      "id": "c0000001-0000-4000-8000-000000000001",
+      "deviceName": "FIXTURE-PC-01",
+      "operatingSystem": "Windows",
+      "complianceState": "compliant"
+    },
+    {
+      "id": "c0000001-0000-4000-8000-000000000002",
+      "deviceName": "FIXTURE-PC-02",
+      "operatingSystem": "Windows",
+      "complianceState": "noncompliant"
+    },
+    {
+      "id": "c0000001-0000-4000-8000-000000000003",
+      "deviceName": "FIXTURE-PHONE-01",
+      "operatingSystem": "Android",
+      "complianceState": "compliant"
+    },
+    {
+      "id": "c0000001-0000-4000-8000-000000000004",
+      "deviceName": "FIXTURE-MAC-01",
+      "operatingSystem": "macOS",
+      "complianceState": "unknown"
+    }
+  ]
+}
