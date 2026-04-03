@@ -5,6 +5,7 @@ from m365_posture.chapters.guests import run_guests_chapter
 from m365_posture.chapters.applications import run_applications_chapter
 from m365_posture.chapters.devices import run_devices_chapter
 from m365_posture.chapters.privileged import run_privileged_chapter
+from m365_posture.chapters.signin_risk import run_signin_risk_chapter
 
 __all__ = [
     "ChapterResult",
@@ -14,4 +15,5 @@ __all__ = [
     "run_devices_chapter",
     "run_guests_chapter",
     "run_privileged_chapter",
+    "run_signin_risk_chapter",
 ]
