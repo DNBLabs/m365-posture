@@ -1,4 +1,6 @@
 .env
+# Local-only cert material (PFX + public CER); create via tooling then move outside repo if you prefer
+certs/
 *.pfx
 *.pem
 *.egg-info/
