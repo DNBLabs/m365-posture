@@ -1,0 +1,28 @@
+{
+  "value": [
+    {
+      "id": "b0000001-0000-4000-8000-000000000001",
+      "appId": "b0000001-1111-4111-8111-111111111111",
+      "displayName": "Fixture Portal",
+      "publisherDomain": "contoso.example"
+    },
+    {
+      "id": "b0000001-0000-4000-8000-000000000002",
+      "appId": "b0000001-2222-4222-8222-222222222222",
+      "displayName": "Fixture API",
+      "publisherDomain": "contoso.example"
+    },
+    {
+      "id": "b0000001-0000-4000-8000-000000000003",
+      "appId": "b0000001-3333-4333-8333-333333333333",
+      "displayName": "Fixture Daemon",
+      "publisherDomain": "contoso.example"
+    },
+    {
+      "id": "b0000001-0000-4000-8000-000000000004",
+      "appId": "b0000001-4444-4444-8444-444444444444",
+      "displayName": "Fixture SPA",
+      "publisherDomain": "contoso.example"
+    }
+  ]
+}
