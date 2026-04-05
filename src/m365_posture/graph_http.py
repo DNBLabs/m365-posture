@@ -1,4 +1,7 @@
-"""Minimal Graph HTTP client using urllib and Azure TokenCredential."""
+"""Minimal Graph HTTP client using stdlib urllib plus Azure TokenCredential.
+
+urllib keeps the dependency surface small for a CLI; timeouts and sizes are bounded in callers.
+"""
 
 from __future__ import annotations
 

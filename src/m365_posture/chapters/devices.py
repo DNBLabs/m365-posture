@@ -17,11 +17,7 @@ def _count_field(items: list[dict], key: str) -> dict[str, int]:
 
 
 def run_devices_chapter(fetch_managed_devices: Callable[[], list[dict]]) -> ChapterResult:
-    """
-    Summarize managed devices from a pre-fetched list (e.g. `/deviceManagement/managedDevices`).
-
-    Production code can pass a callable that pages Graph; tests inject static data.
-    """
+    """Roll up managed devices by compliance and OS; input list is fully paged by the caller."""
     devices = fetch_managed_devices()
     total = len(devices)
     by_compliance = _count_field(devices, "complianceState")

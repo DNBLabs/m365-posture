@@ -1,4 +1,8 @@
-"""CLI entrypoint: config, logging, Graph reads, chapters, report output."""
+"""CLI entrypoint: wire config, logging, Graph GETs, chapter runners, and artifacts.
+
+Chapter failures are isolated so one bad Graph call degrades a single chapter instead
+of aborting the whole run; full diagnostics go to the per-run log file only.
+"""
 
 from __future__ import annotations
 
@@ -32,6 +36,7 @@ from m365_posture.render import render_html
 
 _CHAPTER_ORDER = ("guests", "privileged", "applications", "devices", "signin_risk")
 
+# OData $select keeps payloads small; $top batches page size (pagination follows @odata.nextLink).
 _URL_GUESTS = (
     "https://graph.microsoft.com/v1.0/users"
     "?$select=id,userType,userPrincipalName&$top=999"
@@ -47,6 +52,7 @@ _URL_DEVICES = (
     "https://graph.microsoft.com/v1.0/deviceManagement/managedDevices"
     "?$select=id,complianceState,operatingSystem&$top=999"
 )
+# Intentionally shallow: sign-in APIs are permission-heavy; one page is enough for a sample count.
 _URL_SIGNINS = (
     "https://graph.microsoft.com/v1.0/auditLogs/signIns"
     "?$top=50&$select=id,createdDateTime"
@@ -129,7 +135,7 @@ def run_pipeline(
     def run_guests() -> None:
         try:
             results.append(run_guests_chapter(lambda: paged_list(_URL_GUESTS)))
-        except Exception as exc:  # noqa: BLE001 - CLI boundary
+        except Exception as exc:  # noqa: BLE001 — surface any Graph/transport failure as DEGRADED + log
             _log_chapter_failure(log, exc, "chapter_guests")
             results.append(
                 ChapterResult(

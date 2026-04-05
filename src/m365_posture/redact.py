@@ -1,4 +1,4 @@
-"""Redact PII and tenant identifiers from report-shaped JSON (§3 defaults)."""
+"""Redact PII and tenant identifiers from report-shaped JSON (per design spec: stdout-safe demos)."""
 
 from __future__ import annotations
 
@@ -88,6 +88,7 @@ def _optional_domain_scrub(text: str) -> str:
 
 
 def _stable_guid_token(guid: str) -> str:
+    # Stable per-GUID token lets operators correlate rows in redacted output without exposing raw GUIDs.
     digest = hashlib.sha256(guid.strip().lower().encode("utf-8")).hexdigest()[:8]
     return f"[GUID-{digest}]"
 

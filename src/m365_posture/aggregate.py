@@ -1,4 +1,7 @@
-"""Aggregate chapter results into a versioned report envelope."""
+"""Aggregate chapter results into a versioned report envelope.
+
+``schemaVersion`` bumps are a breaking change for golden tests; keep them explicit in PRs.
+"""
 
 from __future__ import annotations
 

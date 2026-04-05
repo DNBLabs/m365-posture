@@ -60,6 +60,7 @@ _HTML_TEMPLATE = """<!DOCTYPE html>
 """
 
 _env = Environment(
+    # Autoescape: report JSON may include tenant strings; treat HTML output as untrusted input.
     autoescape=select_autoescape(enabled_extensions=("html", "xml")),
 )
 

@@ -118,9 +118,7 @@ def _context_from_http_like_response(response: Any, base: dict[str, Any]) -> dic
 
 
 def graph_failure_context(exc: BaseException, operation: str) -> dict[str, Any]:
-    """
-    Build a JSON-serializable dict for logging. Never includes tokens, secrets, or PEM text.
-    """
+    """Build a JSON-serializable dict for log files (not stdout): correlation IDs and scrubbed bodies only."""
     ctx: dict[str, Any] = {
         "operation": operation,
         "error_type": type(exc).__name__,

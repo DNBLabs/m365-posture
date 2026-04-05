@@ -1,4 +1,7 @@
-"""Shared types for posture report chapters."""
+"""Shared types for posture report chapters.
+
+``Finding`` + ``ChapterResult`` are the contract between collectors and ``aggregate.build_report``.
+"""
 
 from __future__ import annotations
 

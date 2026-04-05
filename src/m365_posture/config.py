@@ -1,3 +1,9 @@
+"""Load operator settings from the process environment.
+
+Secrets and tenant identifiers never ship in source; the CLI reads only ``os.environ``
+so callers can inject values from Task Scheduler, a shell, or an external secret store.
+"""
+
 import os
 from dataclasses import dataclass
 from typing import Optional
@@ -29,6 +35,7 @@ def load_config() -> AppConfig:
     if not cert_path and not client_secret:
         raise ConfigError("Either GRAPH_CERT_PATH or CLIENT_SECRET must be set for app-only auth")
     output_dir = os.environ.get("OUTPUT_DIR", "./dist")
+    # Booleans as strings keep parity with shell and Windows task environment blocks.
     chapters = {
         "guests": os.environ.get("CHAPTER_GUESTS", "true").lower() == "true",
         "privileged": os.environ.get("CHAPTER_PRIVILEGED", "true").lower() == "true",

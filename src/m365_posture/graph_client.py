@@ -85,6 +85,7 @@ def execute_graph_get(
         if 200 <= code < 300:
             raw = response.json()
             return raw() if callable(raw) else raw
+        # Non-transient 4xx/5xx: retrying would not help without changing inputs or permissions.
         raise RuntimeError(f"Graph GET failed for {url!r} with HTTP {code}")
 
     raise RuntimeError(f"Graph GET exceeded max_attempts={max_attempts} for {url!r}")

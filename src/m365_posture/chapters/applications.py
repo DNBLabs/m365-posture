@@ -8,11 +8,7 @@ from m365_posture.chapters.base import ChapterResult, Finding
 
 
 def run_applications_chapter(fetch_applications: Callable[[], list[dict]]) -> ChapterResult:
-    """
-    Count application objects from a pre-fetched list (e.g. `/applications` or merged pages).
-
-    Production code can pass a callable that pages Graph; tests inject static data.
-    """
+    """Count app registrations from a merged page list (caller's responsibility to page Graph)."""
     applications = fetch_applications()
     application_count = len(applications)
 

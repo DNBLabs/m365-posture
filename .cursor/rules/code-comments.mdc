@@ -1,0 +1,17 @@
+---
+description: Code commenting SOP — purpose, why-not-what, security-aware
+globs: src/**/*.py
+alwaysApply: false
+---
+
+# Code commenting standard
+
+1. **Module docstring** — State what the module owns and its boundary (e.g. env-only, HTTP-only). One or two sentences; no marketing prose.
+
+2. **Why, not what** — Use inline `#` comments for non-obvious tradeoffs: Graph API quirks, retry policy, intentional single-page vs paged calls, and why a broad `except` exists at a boundary.
+
+3. **Security-sensitive paths** — Brief note where we avoid logging tokens, scrub bodies, or redact output; state intent (e.g. “log file only”), not a full threat model.
+
+4. **Public functions** — Docstring when raises, side effects, or return shape are non-obvious. Omit docstrings that only repeat the function name or restate obvious types.
+
+5. **No noise** — Do not comment every line; do not duplicate symbol names; avoid unicode section signs and other characters that render poorly in some UIs.

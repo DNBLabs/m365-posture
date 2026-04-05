@@ -10,7 +10,7 @@ _PREVIEW_LIMIT = 20
 
 
 def _preview_row(a: dict) -> dict:
-    """Small, stable subset for report data (IDs are tenant-specific; redaction may apply later)."""
+    # Keep a bounded preview so HTML/JSON stays readable on tenants with many assignments.
     return {
         "id": a.get("id"),
         "principalId": a.get("principalId"),
@@ -22,11 +22,7 @@ def _preview_row(a: dict) -> dict:
 def run_privileged_chapter(
     fetch_directory_role_assignments: Callable[[], list[dict]],
 ) -> ChapterResult:
-    """
-    Summarize privileged directory role assignments from a pre-fetched list.
-
-    Production code can pass a callable that pages Graph; tests inject static data.
-    """
+    """Summarize role assignments; ``fetch_directory_role_assignments`` is paged in production."""
     assignments = fetch_directory_role_assignments()
     assignment_count = len(assignments)
     preview = [_preview_row(a) for a in assignments[:_PREVIEW_LIMIT]]

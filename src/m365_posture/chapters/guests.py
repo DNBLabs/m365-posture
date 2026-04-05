@@ -8,21 +8,17 @@ from m365_posture.chapters.base import ChapterResult, Finding
 
 
 def _is_guest_user(user: dict) -> bool:
-    """True if Graph marks the object as a guest or UPN matches common B2B guest shape."""
     if user.get("userType") == "Guest":
         return True
     upn = user.get("userPrincipalName")
+    # B2B guests often carry "#EXT#" in the UPN even when userType is absent in partial projections.
     if isinstance(upn, str) and "#EXT#" in upn:
         return True
     return False
 
 
 def run_guests_chapter(fetch_users: Callable[[], list[dict]]) -> ChapterResult:
-    """
-    Count guest users from a pre-fetched user list.
-
-    Production code can pass a callable that pages Graph; tests inject static data.
-    """
+    """Count guests; ``fetch_users`` pages Graph in production and returns fixtures in tests."""
     users = fetch_users()
     total_sampled = len(users)
     guest_user_count = sum(1 for u in users if _is_guest_user(u))
