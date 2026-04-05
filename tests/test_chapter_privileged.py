@@ -1,4 +1,4 @@
-"""Unit tests for privileged directory roles chapter (no network)."""
+"""Unit tests for :func:`m365_posture.chapters.run_privileged_chapter` (no network)."""
 
 import json
 from pathlib import Path
@@ -9,6 +9,11 @@ FIXTURE = Path(__file__).resolve().parent / "fixtures" / "graph" / "privileged_a
 
 
 def test_run_privileged_chapter_counts_assignments_from_fixture() -> None:
+    """Assignment count and preview match the static role assignment fixture.
+
+    Returns:
+        None.
+    """
     payload = json.loads(FIXTURE.read_text(encoding="utf-8"))
     assignments = payload["value"]
 

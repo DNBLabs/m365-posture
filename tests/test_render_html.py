@@ -1,4 +1,4 @@
-"""HTML report rendering from `build_report` envelopes."""
+"""Tests for :func:`m365_posture.render.render_html`."""
 
 from __future__ import annotations
 
@@ -8,6 +8,11 @@ from m365_posture.render import render_html
 
 
 def test_render_html_includes_chapter_id_and_severity_strings() -> None:
+    """Rendered HTML contains chapter headings, finding severities, and metadata.
+
+    Returns:
+        None.
+    """
     chapters = [
         ChapterResult(
             chapter_id="guests",

@@ -1,10 +1,15 @@
-"""Tests for report aggregation."""
+"""Tests for :func:`m365_posture.aggregate.build_report`."""
 
 from m365_posture.aggregate import build_report
 from m365_posture.chapters.base import ChapterResult, Finding
 
 
 def test_build_report_ok_and_degraded_counts_and_ordered_chapters() -> None:
+    """Produce envelope with sorted chapter keys and correct OK/DEGRADED summary counts.
+
+    Returns:
+        None.
+    """
     results = [
         ChapterResult(
             chapter_id="z_last",

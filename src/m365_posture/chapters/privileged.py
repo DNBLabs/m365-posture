@@ -1,4 +1,4 @@
-"""Privileged chapter: directory role assignments snapshot (read-only)."""
+"""Privileged access chapter: snapshot of directory role assignments (read-only)."""
 
 from __future__ import annotations
 
@@ -9,20 +9,35 @@ from m365_posture.chapters.base import ChapterResult, Finding
 _PREVIEW_LIMIT = 20
 
 
-def _preview_row(a: dict) -> dict:
-    # Keep a bounded preview so HTML/JSON stays readable on tenants with many assignments.
+def _preview_row(assignment: dict) -> dict:
+    """Extract a small stable subset of fields from one role assignment row.
+
+    Args:
+        assignment: Raw Graph ``roleAssignment``-like object.
+
+    Returns:
+        Dict with id, principal, role definition, and scope identifiers only.
+    """
     return {
-        "id": a.get("id"),
-        "principalId": a.get("principalId"),
-        "roleDefinitionId": a.get("roleDefinitionId"),
-        "directoryScopeId": a.get("directoryScopeId"),
+        "id": assignment.get("id"),
+        "principalId": assignment.get("principalId"),
+        "roleDefinitionId": assignment.get("roleDefinitionId"),
+        "directoryScopeId": assignment.get("directoryScopeId"),
     }
 
 
 def run_privileged_chapter(
     fetch_directory_role_assignments: Callable[[], list[dict]],
 ) -> ChapterResult:
-    """Summarize role assignments; ``fetch_directory_role_assignments`` is paged in production."""
+    """Summarize directory role assignments from a merged list.
+
+    Args:
+        fetch_directory_role_assignments: Callable returning all assignment pages
+            combined as a list of dicts.
+
+    Returns:
+        :class:`ChapterResult` with total count and a bounded preview list.
+    """
     assignments = fetch_directory_role_assignments()
     assignment_count = len(assignments)
     preview = [_preview_row(a) for a in assignments[:_PREVIEW_LIMIT]]

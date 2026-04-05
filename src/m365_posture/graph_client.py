@@ -1,4 +1,9 @@
-"""Graph HTTP helpers: OData pagination and transient-error retries."""
+"""Microsoft Graph HTTP helpers: OData page traversal and transient-error retries.
+
+Implements bounded retries for Graph throttling (HTTP 429) and selected server
+errors, honoring ``Retry-After`` when present. Non-retryable client errors fail
+fast because repeating the request would not succeed without permission or input changes.
+"""
 
 from __future__ import annotations
 
@@ -6,16 +11,18 @@ import random
 import time
 from typing import Any, Callable
 
-# Transient statuses honored by execute_graph_get
 _TRANSIENT_STATUSES = frozenset({429, 503, 504})
 
 
 def sleep_with_backoff(attempt: int, retry_after_sec: float | None = None) -> None:
-    """
-    Capped exponential backoff with jitter. Base ~0.5s, multiply by 2**attempt,
-    cap 60s, plus uniform jitter in [0, 0.25).
+    """Sleep before retrying a transient Graph failure using capped exponential backoff.
 
-    If the server sent Retry-After (seconds), sleep for max(computed_backoff, retry_after_sec).
+    Args:
+        attempt: Zero-based retry attempt (used as exponent for ``2**attempt``).
+        retry_after_sec: Optional ``Retry-After`` value from the response in seconds.
+
+    Returns:
+        None.
     """
     base = 0.5 * (2**attempt)
     backoff = min(base, 60.0) + random.uniform(0.0, 0.25)
@@ -27,6 +34,14 @@ def sleep_with_backoff(attempt: int, retry_after_sec: float | None = None) -> No
 
 
 def _parse_retry_after(headers: Any) -> float | None:
+    """Parse a numeric ``Retry-After`` header from a response-like mapping.
+
+    Args:
+        headers: Object with ``.get`` (e.g. HTTP headers), or ``None``.
+
+    Returns:
+        Seconds to wait, or ``None`` if the header is missing or not numeric.
+    """
     if headers is None or not hasattr(headers, "get"):
         return None
     raw = headers.get("Retry-After")
@@ -41,11 +56,14 @@ def _parse_retry_after(headers: Any) -> float | None:
 
 
 def get_all_odata_pages(fetch_page: Callable[[str | None], dict]) -> list[Any]:
-    """
-    Follow @odata.nextLink / odata.nextLink until exhausted.
+    """Merge all ``value`` entries across OData pages following ``@odata.nextLink``.
 
-    The first page is requested with ``fetch_page(None)``; subsequent calls receive
-    the next URL string from the prior response.
+    Args:
+        fetch_page: Callable taking ``None`` for the first URL, then each ``nextLink``
+            string until the collection ends.
+
+    Returns:
+        Flattened list of items from every page's ``value`` array (may be mixed types).
     """
     merged: list[Any] = []
     next_url: str | None = None
@@ -67,11 +85,19 @@ def execute_graph_get(
     *,
     max_attempts: int = 8,
 ) -> dict[str, Any]:
-    """
-    GET ``url`` with retries on 429 / 503 / 504 using :func:`sleep_with_backoff`
-    and optional ``Retry-After`` header (numeric seconds).
+    """Perform a GET with retries on transient status codes.
 
-    ``get_with_response`` must return an object with ``status_code``, ``headers``, and ``json()``.
+    Args:
+        url: Full Microsoft Graph URL.
+        get_with_response: Function returning a response object with ``status_code``,
+            ``headers``, and ``json()`` (or callable returning JSON).
+        max_attempts: Maximum GET attempts including retries after backoff.
+
+    Returns:
+        Parsed JSON object (typically a dict) for a successful (2xx) response.
+
+    Raises:
+        RuntimeError: On non-retryable HTTP errors or when ``max_attempts`` is exceeded.
     """
     attempt = 0
     while attempt < max_attempts:
@@ -85,7 +111,6 @@ def execute_graph_get(
         if 200 <= code < 300:
             raw = response.json()
             return raw() if callable(raw) else raw
-        # Non-transient 4xx/5xx: retrying would not help without changing inputs or permissions.
         raise RuntimeError(f"Graph GET failed for {url!r} with HTTP {code}")
 
     raise RuntimeError(f"Graph GET exceeded max_attempts={max_attempts} for {url!r}")

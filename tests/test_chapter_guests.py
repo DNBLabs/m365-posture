@@ -1,4 +1,4 @@
-"""Unit tests for guests chapter (no network)."""
+"""Unit tests for :func:`m365_posture.chapters.run_guests_chapter` (no network)."""
 
 import json
 from pathlib import Path
@@ -9,6 +9,11 @@ FIXTURE = Path(__file__).resolve().parent / "fixtures" / "graph" / "guest_users_
 
 
 def test_run_guests_chapter_counts_guests_from_fixture() -> None:
+    """Guest count and findings match the static Graph user list fixture.
+
+    Returns:
+        None.
+    """
     payload = json.loads(FIXTURE.read_text(encoding="utf-8"))
     users = payload["value"]
 

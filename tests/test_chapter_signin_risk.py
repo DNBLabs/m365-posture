@@ -1,9 +1,14 @@
-"""Unit tests for sign-in risk chapter (no network)."""
+"""Unit tests for :func:`m365_posture.chapters.run_signin_risk_chapter` (no network)."""
 
 from m365_posture.chapters import run_signin_risk_chapter
 
 
 def test_run_signin_risk_chapter_empty_list_ok() -> None:
+    """Zero sign-ins yields OK status and zero count in findings.
+
+    Returns:
+        None.
+    """
     result = run_signin_risk_chapter(lambda: [])
 
     assert result.chapter_id == "signin_risk"
@@ -19,7 +24,14 @@ def test_run_signin_risk_chapter_empty_list_ok() -> None:
 
 
 def test_run_signin_risk_chapter_fetch_raises_degraded() -> None:
+    """Generic exceptions from the fetch callable produce DEGRADED without raising.
+
+    Returns:
+        None.
+    """
+
     def boom() -> list[dict]:
+        """Simulate Graph transport failure."""
         raise RuntimeError("network")
 
     result = run_signin_risk_chapter(boom)
@@ -32,7 +44,14 @@ def test_run_signin_risk_chapter_fetch_raises_degraded() -> None:
 
 
 def test_run_signin_risk_chapter_permission_error_degraded() -> None:
+    """PermissionError maps to a specific audit-permissions error summary.
+
+    Returns:
+        None.
+    """
+
     def denied() -> list[dict]:
+        """Simulate missing directory/audit permissions."""
         raise PermissionError("insufficient privileges")
 
     result = run_signin_risk_chapter(denied)

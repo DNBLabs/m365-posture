@@ -1,4 +1,4 @@
-"""Sign-in risk chapter: optional sign-in activity sample (read-only, graceful degradation)."""
+"""Optional sign-in activity sample chapter (read-only, graceful degradation)."""
 
 from __future__ import annotations
 
@@ -8,7 +8,15 @@ from m365_posture.chapters.base import ChapterResult, Finding
 
 
 def run_signin_risk_chapter(fetch_sign_ins: Callable[[], list[dict]]) -> ChapterResult:
-    """Summarize a sign-in sample; failures become DEGRADED without raising (optional chapter)."""
+    """Summarize sign-in records from ``fetch_sign_ins`` without failing the pipeline.
+
+    Args:
+        fetch_sign_ins: Callable returning sign-in dicts (typically one API page).
+
+    Returns:
+        ``OK`` with a count when data is available, or ``DEGRADED`` with a short
+        ``error_summary`` when permissions are missing or the call fails.
+    """
     try:
         sign_ins = fetch_sign_ins()
     except PermissionError:
@@ -21,7 +29,7 @@ def run_signin_risk_chapter(fetch_sign_ins: Callable[[], list[dict]]) -> Chapter
                 "Sign-in activity could not be read (directory or audit permissions may be missing)."
             ),
         )
-    except Exception:  # noqa: BLE001 — any transport/Graph error should downgrade this optional chapter
+    except Exception:  # noqa: BLE001
         return ChapterResult(
             chapter_id="signin_risk",
             status="DEGRADED",

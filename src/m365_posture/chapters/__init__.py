@@ -1,4 +1,4 @@
-"""Chapter runners and shared result types."""
+"""Re-export chapter runner functions and shared result types for the CLI."""
 
 from m365_posture.chapters.base import ChapterResult, Finding, chapter_result_to_dict
 from m365_posture.chapters.guests import run_guests_chapter

@@ -1,4 +1,4 @@
-"""Tests for graph_failure_context."""
+"""Tests for :func:`m365_posture.graph_errors.graph_failure_context`."""
 
 from unittest.mock import MagicMock
 
@@ -8,6 +8,11 @@ from m365_posture.graph_errors import graph_failure_context
 
 
 def test_graph_failure_context_http_response_error_includes_request_id_from_header() -> None:
+    """Include request IDs and scrub secret keys from Graph error JSON bodies.
+
+    Returns:
+        None.
+    """
     response = MagicMock()
     response.status_code = 404
     response.headers = {
@@ -38,6 +43,11 @@ def test_graph_failure_context_http_response_error_includes_request_id_from_head
 
 
 def test_graph_failure_context_generic_exception() -> None:
+    """Non-HTTP exceptions produce minimal context without ``http_status``.
+
+    Returns:
+        None.
+    """
     ctx = graph_failure_context(ValueError("nope"), operation="ping")
     assert ctx["operation"] == "ping"
     assert ctx["error_type"] == "ValueError"

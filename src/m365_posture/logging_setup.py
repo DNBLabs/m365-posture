@@ -1,13 +1,9 @@
-"""File-only logging setup for ``m365_posture``.
+"""Configure file-only logging for the ``m365_posture`` package logger.
 
-Handlers are attached to the dedicated logger named ``m365_posture`` (not the
-root logger). Call ``logging.getLogger("m365_posture")`` or use a child logger
-under that name so records reach the configured file.
-
-**Do not add a StreamHandler here.** stdout/stderr can leak tokens if future
-code logs sensitive payloads; the CLI will print user-facing summaries
-separately (see ``cli.py``). This module configures **only** a
-:class:`logging.FileHandler` at DEBUG level.
+Attaches a single DEBUG-level :class:`logging.FileHandler` to the logger named
+``m365_posture`` and disables propagation to the root logger. Standard streams
+are intentionally not used so accidental logging of response bodies cannot echo
+tokens to the console; the CLI prints short user-facing status lines separately.
 """
 
 from __future__ import annotations
@@ -20,10 +16,14 @@ _FMT = "%(levelname)s %(name)s %(message)s"
 
 
 def configure_logging(log_file: Path) -> None:
-    """Attach a single DEBUG FileHandler on logger ``m365_posture``.
+    """Attach one DEBUG file handler to the ``m365_posture`` logger.
 
-    Replaces any existing handlers on that logger so repeated setup in tests
-    or reloads does not duplicate lines.
+    Args:
+        log_file: Path to the log file (parent directories are created if needed).
+
+    Returns:
+        None. Replaces any existing handlers on the same logger to avoid duplicate
+        log lines when tests or imports call this repeatedly.
     """
     log_file.parent.mkdir(parents=True, exist_ok=True)
 

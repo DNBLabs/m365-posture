@@ -1,7 +1,4 @@
-"""Shared types for posture report chapters.
-
-``Finding`` + ``ChapterResult`` are the contract between collectors and ``aggregate.build_report``.
-"""
+"""Dataclasses describing posture chapter outputs and serialization helpers."""
 
 from __future__ import annotations
 
@@ -11,6 +8,15 @@ from typing import Any, Literal
 
 @dataclass(frozen=True)
 class Finding:
+    """A single human-readable insight produced by a chapter.
+
+    Attributes:
+        severity: ``INFO`` for informational counts, ``WARN`` for attention items.
+        code: Stable machine-readable code (e.g. ``guest.count``).
+        message: Short sentence for reports.
+        evidence: Optional small dict with counts or samples (subject to redaction).
+    """
+
     severity: Literal["INFO", "WARN"]
     code: str
     message: str
@@ -19,6 +25,16 @@ class Finding:
 
 @dataclass(frozen=True)
 class ChapterResult:
+    """Outcome of one chapter run against Microsoft Graph or fixtures.
+
+    Attributes:
+        chapter_id: Internal id (``guests``, ``privileged``, etc.).
+        status: ``OK`` if the chapter completed, ``DEGRADED`` on partial failure.
+        data: Chapter-specific summary fields for JSON and HTML.
+        findings: List of :class:`Finding` entries.
+        error_summary: Short operator message when ``DEGRADED``, else ``None``.
+    """
+
     chapter_id: str
     status: Literal["OK", "DEGRADED"]
     data: dict[str, Any]
@@ -27,5 +43,12 @@ class ChapterResult:
 
 
 def chapter_result_to_dict(result: ChapterResult) -> dict[str, Any]:
-    """Serialize a chapter result to a JSON-friendly dict (nested dataclasses become dicts)."""
+    """Convert a chapter result to nested dicts suitable for JSON serialization.
+
+    Args:
+        result: Frozen dataclass instance.
+
+    Returns:
+        Dict with keys matching :class:`ChapterResult` fields.
+    """
     return asdict(result)

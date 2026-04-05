@@ -1,6 +1,9 @@
-# Contract: bump `schemaVersion` in `m365_posture.aggregate.build_report` and update
-# `tests/golden/report_v1.json` intentionally when the report envelope or serialized
-# chapter shape changes.
+"""Golden JSON contract for :func:`m365_posture.aggregate.build_report`.
+
+Bump ``schemaVersion`` in ``m365_posture.aggregate.build_report`` and update
+``tests/golden/report_v1.json`` intentionally when the report envelope or serialized
+chapter shape changes.
+"""
 
 from __future__ import annotations
 
@@ -17,10 +20,23 @@ _FIXED_TENANT = "tenant-golden-00000000-0000-0000-0000-000000000001"
 
 
 def _normalize_report(obj: object) -> str:
+    """Serialize ``obj`` with sorted keys for stable string comparison.
+
+    Args:
+        obj: JSON-serializable object (typically a report dict).
+
+    Returns:
+        Canonical JSON string without whitespace variance.
+    """
     return json.dumps(obj, sort_keys=True, separators=(",", ":"))
 
 
 def _fixed_chapters() -> list[ChapterResult]:
+    """Build a deterministic list of chapter results matching the golden file.
+
+    Returns:
+        Fixed multi-chapter scenario for contract testing.
+    """
     return [
         ChapterResult(
             chapter_id="applications",
@@ -47,6 +63,11 @@ def _fixed_chapters() -> list[ChapterResult]:
 
 
 def test_build_report_matches_golden_v1() -> None:
+    """Current ``build_report`` output must match ``tests/golden/report_v1.json`` exactly.
+
+    Returns:
+        None.
+    """
     report = build_report(
         _fixed_chapters(),
         tenant_id=_FIXED_TENANT,

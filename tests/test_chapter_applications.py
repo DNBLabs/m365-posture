@@ -1,4 +1,4 @@
-"""Unit tests for applications chapter (no network)."""
+"""Unit tests for :func:`m365_posture.chapters.run_applications_chapter` (no network)."""
 
 import json
 from pathlib import Path
@@ -9,6 +9,11 @@ FIXTURE = Path(__file__).resolve().parent / "fixtures" / "graph" / "applications
 
 
 def test_run_applications_chapter_counts_from_fixture() -> None:
+    """Application count matches the static ``/applications`` page fixture.
+
+    Returns:
+        None.
+    """
     payload = json.loads(FIXTURE.read_text(encoding="utf-8"))
     apps = payload["value"]
 

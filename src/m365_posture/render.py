@@ -1,4 +1,8 @@
-"""Render standardized posture reports as HTML."""
+"""Render posture report envelopes as a single self-contained HTML document.
+
+Uses Jinja2 with autoescaping enabled because report data originates from Graph and
+may contain strings that must not be interpreted as HTML when rendered.
+"""
 
 from __future__ import annotations
 
@@ -60,13 +64,20 @@ _HTML_TEMPLATE = """<!DOCTYPE html>
 """
 
 _env = Environment(
-    # Autoescape: report JSON may include tenant strings; treat HTML output as untrusted input.
     autoescape=select_autoescape(enabled_extensions=("html", "xml")),
 )
 
 
 def render_html(report: dict[str, Any]) -> str:
-    """Render a `build_report` envelope to an HTML document string."""
+    """Format a report envelope from :func:`m365_posture.aggregate.build_report` as HTML.
+
+    Args:
+        report: Report dict containing at least ``chapters``, ``summary``, ``generatedAt``,
+            and ``schemaVersion`` (optional ``title``).
+
+    Returns:
+        UTF-8 HTML document as a single string.
+    """
     chapters_dict: dict[str, Any] = report.get("chapters") or {}
     chapters_sorted = sorted(chapters_dict.items(), key=lambda kv: kv[0])
     summary = report.get("summary") or {}

@@ -1,8 +1,17 @@
-# Creates a self-signed cert for Entra app-only auth (homelab). Outputs PFX + CER under ./certs/
-# Upload graph-app.cer to App registration > Certificates. Use graph-app.pfx locally as GRAPH_CERT_PATH.
+<#
+.SYNOPSIS
+    Creates a self-signed certificate for Entra ID app-only authentication in a homelab.
+
+.DESCRIPTION
+    Generates graph-app.pfx (private key) and graph-app.cer (public) under ./certs/.
+    Upload the .cer to App registration > Certificates; set GRAPH_CERT_PATH to the PFX
+    path for local runs. Uses a passwordless PFX suitable for lab use only.
+
+.NOTES
+    Run from PowerShell; requires permission to write to Cert:\CurrentUser\My and ./certs/.
+#>
 
 $ErrorActionPreference = "Stop"
-# Repo root = parent of /scripts
 $repoRoot = Split-Path -Parent $PSScriptRoot
 
 $base = Join-Path $repoRoot "certs"
@@ -21,7 +30,7 @@ $thumb = $cert.Thumbprint
 $pfxPath = Join-Path $base "graph-app.pfx"
 $cerPath = Join-Path $base "graph-app.cer"
 
-# Passwordless PFX (homelab). For a password-protected PFX, set $pwd instead.
+# Homelab-only: empty SecureString yields an exportable passwordless PFX.
 $pwd = New-Object System.Security.SecureString
 Export-PfxCertificate `
     -Cert "Cert:\CurrentUser\My\$thumb" `

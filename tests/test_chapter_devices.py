@@ -1,4 +1,4 @@
-"""Unit tests for managed devices chapter (no network)."""
+"""Unit tests for :func:`m365_posture.chapters.run_devices_chapter` (no network)."""
 
 import json
 from pathlib import Path
@@ -9,6 +9,11 @@ FIXTURE = Path(__file__).resolve().parent / "fixtures" / "graph" / "managed_devi
 
 
 def test_run_devices_chapter_summarizes_fixture() -> None:
+    """Compliance and OS histograms match the static managed devices fixture.
+
+    Returns:
+        None.
+    """
     payload = json.loads(FIXTURE.read_text(encoding="utf-8"))
     devices = payload["value"]
 

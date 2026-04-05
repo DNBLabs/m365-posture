@@ -1,4 +1,4 @@
-"""Allow ``python -m m365_posture`` (e.g. Task Scheduler)."""
+"""Entry point for ``python -m m365_posture`` (e.g. Windows Task Scheduler)."""
 
 from m365_posture.cli import main
 
