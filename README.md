@@ -46,6 +46,8 @@ For a **local self-signed** cert suitable for testing (not for production attest
    - **`graph-app.cer`** — **public** cert: you will upload this to Entra.
    - **`graph-app.pfx`** — **private** key: keep on your machine; you will point `GRAPH_CERT_PATH` here.
 
+   The script also imports the certificate into **`Cert:\CurrentUser\My`** for export. Remove it from the store when you are done testing if you do not want it left on that profile (e.g. shared machines or golden VM images).
+
    For production or employer policy, use your org’s process (internal CA, Key Vault, managed identity, etc.) instead of this script.
 
 ### 2. Register an app in Microsoft Entra ID
@@ -83,7 +85,7 @@ The tool uses **app-only** (daemon) calls, so you need **Application** permissio
    | `Application.Read.All` | `applications` |
    | `DeviceManagementManagedDevices.Read.All` | `devices` |
 
-3. If you set `CHAPTER_SIGNIN_RISK=true`, also add what your tenant allows for sign-in/audit (often **`AuditLog.Read.All`**; see [`docs/permissions.md`](docs/permissions.md)).
+3. If you set `CHAPTER_SIGNIN_RISK=true`, add the **application** permissions your tenant allows for that chapter—for example **`AuditLog.Read.All`** and/or **`IdentityRiskEvent.Read.All`** (see [`docs/permissions.md`](docs/permissions.md) for details and alternatives).
 
 4. Click **Grant admin consent for &lt;your tenant&gt;** and confirm. Without admin consent, Graph returns **403** and chapters may show as **DEGRADED**.
 
@@ -108,7 +110,9 @@ Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
 
 ### 6. Set environment variables and run (PowerShell)
 
-The CLI reads **process environment variables only**. It does **not** load a `.env` file automatically. Replace the placeholders with your tenant, client ID, and the **full path** to your PFX.
+The CLI reads **process environment variables only**. It does **not** load a `.env` file automatically. Environment variables are convenient for local runs but are **not** a secrets vault (they are visible to the process and anything that can read that session’s environment—use a proper store for production).
+
+Replace the placeholders with your tenant, client ID, and the **full path** to your PFX.
 
 ```powershell
 $env:TENANT_ID   = "00000000-0000-0000-0000-000000000000"   # Directory (tenant) ID
@@ -144,7 +148,7 @@ Reference copy of variable names: [`.env.example`](.env.example) (template only�
 For a **quick lab test** only, you can use a **client secret** instead of a certificate:
 
 1. In the app registration: **Certificates & secrets** → **New client secret** → copy the **Value** once (it is shown only at creation).
-2. In PowerShell, set `TENANT_ID` and `CLIENT_ID`, **do not set** `GRAPH_CERT_PATH`, and set:
+2. In PowerShell, set `TENANT_ID` and `CLIENT_ID`, **clear or omit** `GRAPH_CERT_PATH` (if `GRAPH_CERT_PATH` is set, the app **always uses certificate auth** and ignores `CLIENT_SECRET`), and set:
 
    ```powershell
    $env:CLIENT_SECRET = "your-secret-value"
@@ -160,9 +164,9 @@ Secrets are harder to rotate safely than certs and are easier to leak from logs;
 |----------|----------|-------------|
 | `TENANT_ID` | Yes | Entra tenant (directory) ID |
 | `CLIENT_ID` | Yes | Application (client) ID of the app registration |
-| `GRAPH_CERT_PATH` | One of cert or secret | Filesystem path to the PFX for certificate auth (**preferred**) |
+| `GRAPH_CERT_PATH` | One of cert or secret | Filesystem path to the PFX for certificate auth (**preferred**). If this is set, **certificate auth wins** even when `CLIENT_SECRET` is also set. |
 | `GRAPH_CERT_PASSWORD` | If PFX is encrypted | Password for the PFX |
-| `CLIENT_SECRET` | One of cert or secret | Client secret (alternative to certificate; lab only recommended) |
+| `CLIENT_SECRET` | One of cert or secret | Client secret (alternative when `GRAPH_CERT_PATH` is unset; lab only recommended) |
 | `CHAPTER_GUESTS` | No | `true` / `false` — guests chapter (default `true`) |
 | `CHAPTER_PRIVILEGED` | No | Privileged roles chapter (default `true`) |
 | `CHAPTER_APPLICATIONS` | No | Applications chapter (default `true`) |
@@ -172,8 +176,18 @@ Secrets are harder to rotate safely than certs and are easier to leak from logs;
 
 ## Run (summary)
 
+PowerShell (same as [step 6](#6-set-environment-variables-and-run-powershell)):
+
+```powershell
+m365-posture run --out .\out
+# m365-posture run --out .\out --redact
+```
+
+On macOS/Linux or any shell:
+
 ```bash
-m365-posture run --out ./out [--redact]
+m365-posture run --out ./out
+# m365-posture run --out ./out --redact
 ```
 
 - **`--out`**: Directory for `report.json`, `report.html`, and `runs/*.log` (created if missing).
